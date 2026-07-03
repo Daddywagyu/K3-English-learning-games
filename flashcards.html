@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flashcards ภาษาอังกฤษ</title>
+    <style>
+        body { font-family: 'Comic Sans MS', sans-serif; background-color: #fdf6e3; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
+        .container { background-color: white; width: 90%; max-width: 500px; padding: 20px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); text-align: center; }
+        h1 { color: #d35400; }
+        .category-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px; }
+        button { padding: 15px; border: none; border-radius: 10px; background-color: #3498db; color: white; font-size: 16px; cursor: pointer; transition: 0.2s; }
+        button:hover { background-color: #2980b9; }
+        
+        #card-screen { display: none; }
+        .card { border: 4px solid #f1c40f; border-radius: 20px; padding: 20px; margin: 20px 0; background: #fffdf0; }
+        .emoji { font-size: 100px; }
+        .word { font-size: 40px; font-weight: bold; color: #2c3e50; margin: 10px 0; }
+        .meaning { font-size: 24px; color: #7f8c8d; margin-bottom: 20px; }
+        
+        .nav-controls { display: flex; justify-content: space-between; margin-top: 10px; }
+        .btn-nav { background-color: #27ae60; width: 48%; }
+        .btn-repeat { background-color: #e67e22; width: 100%; margin-bottom: 10px; }
+        .btn-back-menu { background-color: #95a5a6; width: 100%; margin-top: 10px; }
+    </style>
+</head>
+<body>
+
+<div class="container" id="menu-screen">
+    <h1>เลือกหมวดหมู่ที่อยากเรียน</h1>
+    <div class="category-grid" id="category-grid"></div>
+</div>
+
+<div class="container" id="card-screen">
+    <div class="card">
+        <div class="emoji" id="card-emoji">🍎</div>
+        <div class="word" id="card-word">APPLE</div>
+        <div class="meaning" id="card-meaning">แอปเปิ้ล</div>
+    </div>
+    
+    <button class="btn-repeat" onclick="repeatAudio()">🔊 ฟังซ้ำอีกครั้ง</button>
+    
+    <div class="nav-controls">
+        <button class="btn-nav" onclick="changeCard(-1)">⬅️ ย้อนกลับ</button>
+        <button class="btn-nav" onclick="changeCard(1)">ต่อไป ➡️</button>
+    </div>
+    <button class="btn-back-menu" onclick="showMenu()">🏠 กลับหน้าเมนู</button>
+    <button class="btn-back-menu" onclick="backToHome()" style="background-color: #9b59b6; margin-top: 10px;">🏠 กลับสู่หน้าหลัก</button>
+</div>
+
+<script>
+    const data = {
+        "โรงเรียน": [{e: "BOOK", t: "หนังสือ", i: "📖"}, {e: "PEN", t: "ปากกา", i: "🖊️"}, {e: "PENCIL", t: "ดินสอ", i: "✏️"}, {e: "BAG", t: "กระเป๋า", i: "🎒"}, {e: "RULER", t: "ไม้บรรทัด", i: "📏"}, {e: "TEACHER", t: "คุณครู", i: "👩‍🏫"}, {e: "FRIEND", t: "เพื่อน", i: "🧑‍🤝‍🧑"}, {e: "SCHOOL", t: "โรงเรียน", i: "🏫"}],
+        "อาหาร": [{e: "APPLE", t: "แอปเปิ้ล", i: "🍎"}, {e: "BANANA", t: "กล้วย", i: "🍌"}, {e: "MILK", t: "นม", i: "🥛"}, {e: "WATER", t: "น้ำ", i: "💧"}, {e: "EGG", t: "ไข่", i: "🥚"}, {e: "RICE", t: "ข้าว", i: "🍚"}, {e: "CAKE", t: "เค้ก", i: "🍰"}],
+        "สัตว์": [{e: "DOG", t: "สุนัข", i: "🐶"}, {e: "CAT", t: "แมว", i: "🐱"}, {e: "BIRD", t: "นก", i: "🐦"}, {e: "FISH", t: "ปลา", i: "🐟"}, {e: "PIG", t: "หมู", i: "🐷"}, {e: "DUCK", t: "เป็ด", i: "🦆"}, {e: "LION", t: "สิงโต", i: "🦁"}],
+        "สี": [{e: "RED", t: "สีแดง", i: "🔴"}, {e: "BLUE", t: "สีฟ้า", i: "🔵"}, {e: "GREEN", t: "สีเขียว", i: "🟢"}, {e: "YELLOW", t: "สีเหลือง", i: "🟡"}, {e: "PINK", t: "สีชมพู", i: "🌸"}, {e: "BLACK", t: "สีดำ", i: "⚫"}, {e: "WHITE", t: "สีขาว", i: "⚪"}],
+        "ร่างกาย": [{e: "HEAD", t: "หัว", i: "🧑"}, {e: "EYE", t: "ตา", i: "👁️"}, {e: "EAR", t: "หู", i: "👂"}, {e: "NOSE", t: "จมูก", i: "👃"}, {e: "MOUTH", t: "ปาก", i: "👄"}, {e: "HAND", t: "มือ", i: "✋"}, {e: "FOOT", t: "เท้า", i: "🦶"}],
+        "บ้าน": [{e: "HOME", t: "บ้าน", i: "🏠"}, {e: "DAD", t: "พ่อ", i: "👨"}, {e: "MOM", t: "แม่", i: "👩"}, {e: "BROTHER", t: "พี่น้องชาย", i: "👦"}, {e: "SISTER", t: "พี่น้องหญิง", i: "👧"}, {e: "BED", t: "เตียง", i: "🛏️"}, {e: "CHAIR", t: "เก้าอี้", i: "🪑"}, {e: "TABLE", t: "โต๊ะ", i: "🍽️"}],
+        "ท่าทาง": [{e: "RUN", t: "วิ่ง", i: "🏃"}, {e: "WALK", t: "เดิน", i: "🚶"}, {e: "SIT", t: "นั่ง", i: "🧎"}, {e: "STAND", t: "ยืน", i: "🧍"}, {e: "EAT", t: "กิน", i: "😋"}, {e: "SLEEP", t: "นอน", i: "😴"}]
+    };
+
+    let currentCat = "";
+    let currentIndex = 0;
+
+    function init() {
+        const grid = document.getElementById("category-grid");
+        for (let cat in data) {
+            let btn = document.createElement("button");
+            btn.innerText = cat;
+            btn.onclick = () => startFlashcards(cat);
+            grid.appendChild(btn);
+        }
+    }
+
+    function startFlashcards(cat) {
+        currentCat = cat;
+        currentIndex = 0;
+        document.getElementById("menu-screen").style.display = "none";
+        document.getElementById("card-screen").style.display = "block";
+        updateCard();
+    }
+
+    function showMenu() {
+        window.speechSynthesis.cancel();
+        document.getElementById("menu-screen").style.display = "block";
+        document.getElementById("card-screen").style.display = "none";
+    }
+
+    function backToHome() {
+        window.speechSynthesis.cancel();
+        window.location.href = "index.html";
+    }
+
+    function updateCard() {
+        const item = data[currentCat][currentIndex];
+        document.getElementById("card-emoji").innerText = item.i;
+        document.getElementById("card-word").innerText = item.e;
+        document.getElementById("card-meaning").innerText = item.t;
+        speak(item.e, item.t);
+    }
+
+    function repeatAudio() {
+        const item = data[currentCat][currentIndex];
+        speak(item.e, item.t);
+    }
+
+    function speak(word, meaning) {
+        window.speechSynthesis.cancel();
+
+        // 1. การสะกด (ภาษาอังกฤษ, ช้า)
+        let spell = word.split('').join(' ');
+        let spellMsg = new SpeechSynthesisUtterance(spell);
+        spellMsg.lang = 'en-US';
+        spellMsg.rate = 0.3;
+
+        // 2. คำศัพท์ (ภาษาอังกฤษ, ปกติ)
+        let wordMsg = new SpeechSynthesisUtterance(word);
+        wordMsg.lang = 'en-US';
+        wordMsg.rate = 0.5;
+
+        // 3. ความหมาย (ภาษาไทย)
+        let meaningMsg = new SpeechSynthesisUtterance(meaning);
+        meaningMsg.lang = 'th-TH'; // กำหนดให้เป็นภาษาไทยโดยเฉพาะ
+        meaningMsg.rate = 0.5;
+
+        // เชื่อมต่อลำดับเสียงให้พูดต่อกัน
+        spellMsg.onend = () => window.speechSynthesis.speak(wordMsg);
+        wordMsg.onend = () => window.speechSynthesis.speak(meaningMsg);
+
+        window.speechSynthesis.speak(spellMsg);
+    }
+
+    function changeCard(dir) {
+        currentIndex += dir;
+        if (currentIndex < 0) currentIndex = data[currentCat].length - 1;
+        if (currentIndex >= data[currentCat].length) currentIndex = 0;
+        updateCard();
+    }
+
+    function backToHome() {
+        window.speechSynthesis.cancel();
+        window.location.href = "index.html";
+    }
+
+    init();
+</script>
+</body>
+</html>

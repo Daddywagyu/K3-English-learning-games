@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>English Learning Games</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Comic Sans MS', 'Chalkboard SE', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            text-align: center;
+            max-width: 600px;
+            width: 100%;
+        }
+
+        .header {
+            background: white;
+            border-radius: 30px;
+            padding: 40px 30px;
+            margin-bottom: 40px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .header h1 {
+            font-size: 42px;
+            color: #667eea;
+            margin-bottom: 10px;
+            animation: bounce 2s infinite;
+        }
+
+        .header p {
+            font-size: 18px;
+            color: #7f8c8d;
+            margin-bottom: 15px;
+        }
+
+        .emoji-title {
+            font-size: 60px;
+            margin: 20px 0;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .menu-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        @media (max-width: 600px) {
+            .menu-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .menu-item {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .menu-item:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .menu-item.flashcard {
+            border-top: 5px solid #3498db;
+        }
+
+        .menu-item.fill-word {
+            border-top: 5px solid #e74c3c;
+        }
+
+        .menu-item.arrange-word {
+            border-top: 5px solid #f39c12;
+        }
+
+        .menu-icon {
+            font-size: 60px;
+            margin-bottom: 15px;
+        }
+
+        .menu-item h2 {
+            font-size: 28px;
+            margin-bottom: 10px;
+            color: #2c3e50;
+        }
+
+        .menu-item p {
+            font-size: 16px;
+            color: #95a5a6;
+            line-height: 1.5;
+        }
+
+        .footer {
+            color: white;
+            margin-top: 30px;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        .info-box {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .info-box h3 {
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+
+        .info-box p {
+            font-size: 14px;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <div class="emoji-title">🎓</div>
+        <h1>English Learning</h1>
+        <p>เรียนภาษาอังกฤษอย่างสนุกสนาน</p>
+    </div>
+
+    <div class="info-box">
+        <h3>🌟 เลือกวิธีการเรียนของคุณ</h3>
+        <p>เลือก 3 วิธีการเรียนและฝึกภาษาอังกฤษของคุณ เรียนคำศัพท์ใหม่ ทำแบบฝึกหัด และเพิ่มพูนความรู้</p>
+    </div>
+
+    <div class="menu-grid">
+        <a href="flashcards.html" class="menu-item flashcard">
+            <div class="menu-icon">📚</div>
+            <h2>เรียน</h2>
+            <p>เรียนรู้คำศัพท์ใหม่พร้อมเสียงออกเสียงและภาพประกอบ</p>
+        </a>
+
+        <a href="fill-missing-words.html" class="menu-item fill-word">
+            <div class="menu-icon">✍️</div>
+            <h2>เติมคำที่หายไป</h2>
+            <p>ฝึกความจำและสะกดคำโดยเติมตัวอักษรที่หายไป</p>
+        </a>
+
+        <a href="arrange-words.html" class="menu-item arrange-word">
+            <div class="menu-icon">🔤</div>
+            <h2>เรียงคำศัพท์</h2>
+            <p>จัดเรียงตัวอักษรให้เป็นคำศัพท์ที่ถูกต้อง</p>
+        </a>
+    </div>
+
+    <div class="footer">
+        <p>💡 เคล็ดลับ: เลือกเกมที่คุณชอบและเรียนรู้อย่างต่อเนื่อง!</p>
+    </div>
+</div>
+
+</body>
+</html>

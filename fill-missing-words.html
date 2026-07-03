@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>เกมเติมตัวอักษรภาษาอังกฤษ</title>
+    <style>
+        body { font-family: 'Comic Sans MS', 'Chalkboard SE', sans-serif; background-color: #ffeaa7; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; text-align: center; }
+        .game-container { background-color: white; border-radius: 20px; padding: 30px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 90%; max-width: 400px; }
+        h1 { color: #ff7675; font-size: 24px; margin-top: 0; }
+        .score { font-size: 18px; color: #00cec9; font-weight: bold; margin-bottom: 20px; }
+        .image-box { font-size: 100px; margin: 10px 0; line-height: 1; }
+        .audio-btn { background-color: #fdcb6e; border: none; border-radius: 50%; width: 60px; height: 60px; font-size: 30px; cursor: pointer; box-shadow: 0 5px 0 #e1b12c; transition: transform 0.1s; margin-bottom: 20px; }
+        .audio-btn:active { transform: translateY(5px); box-shadow: 0 0 0 #e1b12c; }
+        .word-display { font-size: 40px; letter-spacing: 10px; font-weight: bold; color: #2d3436; margin-bottom: 30px; }
+        .options-container { display: flex; justify-content: space-around; margin-bottom: 20px; }
+        .option-btn { background-color: #74b9ff; color: white; border: none; border-radius: 15px; width: 80px; height: 80px; font-size: 36px; font-weight: bold; cursor: pointer; box-shadow: 0 5px 0 #0984e3; transition: all 0.2s; }
+        .option-btn:hover { background-color: #0984e3; }
+        .option-btn:active { transform: translateY(5px); box-shadow: 0 0 0 #0984e3; }
+        .message { font-size: 24px; font-weight: bold; height: 35px; }
+        .correct { color: #00b894; }
+        .wrong { color: #d63031; }
+        .restart-btn { background-color: #00b894; color: white; border: none; padding: 15px 30px; font-size: 20px; border-radius: 10px; cursor: pointer; display: none; margin: 0 auto; box-shadow: 0 5px 0 #009432; }
+    </style>
+</head>
+<body>
+
+<div class="game-container">
+    <h1>เติมตัวอักษรที่หายไป!</h1>
+    <div class="score">รอบนี้ได้คะแนน: <span id="score">0</span> / 10</div>
+    
+    <div id="game-area">
+        <div class="image-box" id="image-box">🍎</div>
+        <button class="audio-btn" onclick="playWordAudio()">🔊</button>
+        <div class="word-display" id="word-display">_ P P L E</div>
+        
+        <div class="options-container" id="options-container"></div>
+        
+        <div class="message" id="message"></div>
+    </div>
+
+    <button class="restart-btn" id="restart-btn" onclick="startGame()">เล่นอีกรอบ 🔄</button>
+    <button class="restart-btn" id="home-btn" onclick="backToHome()" style="background-color: #9b59b6; display: none; margin-top: 10px;">🏠 กลับสู่หน้าหลัก</button>
+</div>
+
+<script>
+    const vocabularyDatabase = [
+        { word: "BOOK", missingIndex: 0, options: ["B", "D", "P"], image: "📖" },
+        { word: "PEN", missingIndex: 1, options: ["E", "A", "O"], image: "🖊️" },
+        { word: "PENCIL", missingIndex: 1, options: ["E", "A", "I"], image: "✏️" },
+        { word: "BAG", missingIndex: 1, options: ["A", "E", "O"], image: "🎒" },
+        { word: "RULER", missingIndex: 1, options: ["U", "O", "A"], image: "📏" },
+        { word: "TEACHER", missingIndex: 0, options: ["T", "D", "B"], image: "👩‍🏫" },
+        { word: "FRIEND", missingIndex: 2, options: ["I", "E", "A"], image: "🧑‍🤝‍🧑" },
+        { word: "SCHOOL", missingIndex: 0, options: ["S", "C", "H"], image: "🏫" },
+        { word: "APPLE", missingIndex: 0, options: ["A", "E", "O"], image: "🍎" },
+        { word: "BANANA", missingIndex: 1, options: ["A", "E", "O"], image: "🍌" },
+        { word: "MILK", missingIndex: 1, options: ["I", "A", "E"], image: "🥛" },
+        { word: "WATER", missingIndex: 1, options: ["A", "E", "O"], image: "💧" },
+        { word: "EGG", missingIndex: 0, options: ["E", "A", "O"], image: "🥚" },
+        { word: "RICE", missingIndex: 1, options: ["I", "E", "A"], image: "🍚" },
+        { word: "CAKE", missingIndex: 1, options: ["A", "E", "O"], image: "🍰" },
+        { word: "DOG", missingIndex: 0, options: ["D", "B", "P"], image: "🐶" },
+        { word: "CAT", missingIndex: 1, options: ["A", "E", "O"], image: "🐱" },
+        { word: "BIRD", missingIndex: 1, options: ["I", "E", "A"], image: "🐦" },
+        { word: "FISH", missingIndex: 2, options: ["S", "C", "X"], image: "🐟" },
+        { word: "PIG", missingIndex: 1, options: ["I", "A", "U"], image: "🐷" },
+        { word: "DUCK", missingIndex: 1, options: ["U", "O", "A"], image: "🦆" },
+        { word: "LION", missingIndex: 0, options: ["L", "I", "M"], image: "🦁" },
+        { word: "RED", missingIndex: 1, options: ["E", "A", "O"], image: "🔴" },
+        { word: "BLUE", missingIndex: 2, options: ["U", "O", "A"], image: "🔵" },
+        { word: "GREEN", missingIndex: 2, options: ["E", "A", "O"], image: "🟢" },
+        { word: "YELLOW", missingIndex: 1, options: ["E", "A", "O"], image: "🟡" },
+        { word: "PINK", missingIndex: 1, options: ["I", "A", "E"], image: "🌸" },
+        { word: "BLACK", missingIndex: 2, options: ["A", "E", "O"], image: "⚫" },
+        { word: "WHITE", missingIndex: 2, options: ["I", "E", "A"], image: "⚪" },
+        { word: "HEAD", missingIndex: 1, options: ["E", "A", "O"], image: "🧑" },
+        { word: "EYE", missingIndex: 1, options: ["Y", "I", "A"], image: "👁️" },
+        { word: "EAR", missingIndex: 0, options: ["E", "A", "O"], image: "👂" },
+        { word: "NOSE", missingIndex: 1, options: ["O", "U", "A"], image: "👃" },
+        { word: "MOUTH", missingIndex: 1, options: ["O", "U", "A"], image: "👄" },
+        { word: "HAND", missingIndex: 1, options: ["A", "E", "O"], image: "✋" },
+        { word: "FOOT", missingIndex: 1, options: ["O", "U", "A"], image: "🦶" },
+        { word: "HOME", missingIndex: 1, options: ["O", "U", "A"], image: "🏠" },
+        { word: "DAD", missingIndex: 1, options: ["A", "E", "O"], image: "👨" },
+        { word: "MOM", missingIndex: 1, options: ["O", "U", "A"], image: "👩" },
+        { word: "BROTHER", missingIndex: 2, options: ["O", "U", "A"], image: "👦" },
+        { word: "SISTER", missingIndex: 1, options: ["I", "E", "A"], image: "👧" },
+        { word: "BED", missingIndex: 1, options: ["E", "A", "O"], image: "🛏️" },
+        { word: "CHAIR", missingIndex: 2, options: ["A", "E", "O"], image: "🪑" },
+        { word: "TABLE", missingIndex: 1, options: ["A", "E", "O"], image: "🍽️" },
+        { word: "RUN", missingIndex: 1, options: ["U", "O", "A"], image: "🏃" },
+        { word: "WALK", missingIndex: 1, options: ["A", "E", "O"], image: "🚶" },
+        { word: "SIT", missingIndex: 1, options: ["I", "A", "E"], image: "🧎" },
+        { word: "STAND", missingIndex: 2, options: ["A", "E", "O"], image: "🧍" },
+        { word: "EAT", missingIndex: 0, options: ["E", "A", "O"], image: "😋" },
+        { word: "SLEEP", missingIndex: 2, options: ["E", "A", "O"], image: "😴" }
+    ];
+
+    let gameQuestions = []; 
+    let currentQuestionIndex = 0;
+    let score = 0;
+
+    function shuffle(array) {
+        let currentIndex = array.length, randomIndex;
+        while (currentIndex != 0) {
+            randomIndex = Math.floor(Math.random() * currentIndex);
+            currentIndex--;
+            [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+        }
+        return array;
+    }
+
+    function playWordAudio() {
+        const currentWord = gameQuestions[currentQuestionIndex].word;
+        const utterance = new SpeechSynthesisUtterance(currentWord);
+        utterance.lang = 'en-US'; 
+        utterance.rate = 0.75;
+        window.speechSynthesis.speak(utterance);
+    }
+
+    function startGame() {
+        currentQuestionIndex = 0;
+        score = 0;
+        document.getElementById("score").innerText = score;
+        document.getElementById("restart-btn").style.display = "none";
+        document.getElementById("game-area").style.display = "block";
+        document.getElementById("message").innerText = "";
+        
+        let shuffledList = shuffle([...vocabularyDatabase]);
+        gameQuestions = shuffledList.slice(0, 10);
+        
+        loadQuestion();
+    }
+
+    function loadQuestion() {
+        const currentData = gameQuestions[currentQuestionIndex];
+        
+        document.getElementById("image-box").innerText = currentData.image;
+        
+        let displayWord = "";
+        for (let i = 0; i < currentData.word.length; i++) {
+            if (i === currentData.missingIndex) {
+                displayWord += "_ ";
+            } else {
+                displayWord += currentData.word[i] + " ";
+            }
+        }
+        document.getElementById("word-display").innerText = displayWord.trim();
+        
+        const optionsContainer = document.getElementById("options-container");
+        optionsContainer.innerHTML = "";
+        
+        // --- ส่วนที่แก้ไข: สร้างสำเนาของ options แล้วสุ่มลำดับก่อนนำมาแสดง ---
+        let optionsToDisplay = [...currentData.options]; 
+        shuffle(optionsToDisplay); 
+        
+        optionsToDisplay.forEach(option => {
+            const btn = document.createElement("button");
+            btn.className = "option-btn";
+            btn.innerText = option;
+            btn.onclick = () => checkAnswer(option);
+            optionsContainer.appendChild(btn);
+        });
+
+        document.getElementById("message").innerText = "";
+    }
+
+    function checkAnswer(selectedLetter) {
+        const currentData = gameQuestions[currentQuestionIndex];
+        const correctLetter = currentData.word[currentData.missingIndex];
+        const messageEl = document.getElementById("message");
+
+        if (selectedLetter === correctLetter) {
+            messageEl.innerText = "⭐ เก่งมากครับ! ⭐";
+            messageEl.className = "message correct";
+            score++;
+            document.getElementById("score").innerText = score;
+            playWordAudio();
+            setTimeout(nextQuestion, 1500);
+        } else {
+            messageEl.innerText = "❌ ลองอีกทีนะจ๊ะ ❌";
+            messageEl.className = "message wrong";
+        }
+    }
+
+    function nextQuestion() {
+        currentQuestionIndex++;
+        if (currentQuestionIndex < gameQuestions.length) {
+            loadQuestion();
+        } else {
+            document.getElementById("game-area").style.display = "none";
+            document.getElementById("message").innerText = `🎉 จบเกมแล้ว! ได้คะแนน ${score} / 10`;
+            document.getElementById("message").className = "message correct";
+            document.getElementById("restart-btn").style.display = "block";
+            document.getElementById("home-btn").style.display = "block";
+        }
+    }
+
+    function backToHome() {
+        window.location.href = "index.html";
+    }
+
+    window.onload = startGame;
+</script>
+
+</body>
+</html>

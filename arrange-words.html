@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>เกมเรียงตัวอักษรภาษาอังกฤษ</title>
+    <style>
+        body { font-family: 'Comic Sans MS', 'Chalkboard SE', sans-serif; background-color: #ffeaa7; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; text-align: center; }
+        .game-container { background-color: white; border-radius: 25px; padding: 30px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 90%; max-width: 450px; }
+        h1 { color: #ff7675; font-size: 22px; margin-bottom: 10px; }
+        .score { font-size: 18px; color: #00cec9; font-weight: bold; margin-bottom: 15px; }
+        .image-box { font-size: 80px; margin: 10px 0; }
+        .audio-btn { background-color: #fdcb6e; border: none; border-radius: 50%; width: 50px; height: 50px; font-size: 25px; cursor: pointer; box-shadow: 0 5px 0 #e1b12c; margin-bottom: 20px; }
+        
+        /* ช่องใส่คำตอบ */
+        .answer-box { min-height: 60px; font-size: 35px; font-weight: bold; color: #2d3436; margin-bottom: 20px; border-bottom: 3px solid #dfe6e9; display: flex; justify-content: center; align-items: center; gap: 10px; }
+        
+        /* ปุ่มตัวอักษร */
+        .letters-container { display: flex; justify-content: center; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; }
+        .letter-btn { background-color: #74b9ff; color: white; border: none; border-radius: 10px; width: 50px; height: 50px; font-size: 24px; font-weight: bold; cursor: pointer; box-shadow: 0 3px 0 #0984e3; }
+        .letter-btn:active { transform: translateY(3px); box-shadow: none; }
+        
+        .controls { display: flex; justify-content: center; gap: 10px; }
+        .btn-clear { background-color: #ff7675; color: white; border: none; padding: 10px 20px; border-radius: 10px; cursor: pointer; font-size: 16px; }
+        
+        .message { font-size: 22px; font-weight: bold; margin-top: 15px; height: 30px; }
+        .correct { color: #00b894; }
+        .wrong { color: #d63031; }
+        .restart-btn { background-color: #00b894; color: white; border: none; padding: 15px 30px; font-size: 18px; border-radius: 10px; cursor: pointer; display: none; margin: 0 auto; }
+    </style>
+</head>
+<body>
+
+<div class="game-container">
+    <h1>เรียงคำศัพท์ให้ถูกต้อง!</h1>
+    <div class="score">คะแนน: <span id="score">0</span> / 10</div>
+    
+    <div id="game-area">
+        <div class="image-box" id="image-box">🍎</div>
+        <button class="audio-btn" onclick="playWordAudio()">🔊</button>
+        
+        <div class="answer-box" id="answer-box"></div>
+        <div class="letters-container" id="letters-container"></div>
+        
+        <div class="controls">
+            <button class="btn-clear" onclick="clearAnswer()">ลบคำตอบ</button>
+        </div>
+        
+        <div class="message" id="message"></div>
+    </div>
+
+    <button class="restart-btn" id="restart-btn" onclick="startGame()">เริ่มเล่นใหม่ 🔄</button>
+    <button class="restart-btn" id="home-btn" onclick="backToHome()" style="background-color: #9b59b6; display: none; margin-top: 10px;">🏠 กลับสู่หน้าหลัก</button>
+</div>
+
+<script>
+    const vocabularyDatabase = [
+        { word: "BOOK", image: "📖" }, { word: "PEN", image: "🖊️" }, { word: "PENCIL", image: "✏️" },
+        { word: "BAG", image: "🎒" }, { word: "RULER", image: "📏" }, { word: "TEACHER", image: "👩‍🏫" },
+        { word: "FRIEND", image: "🧑‍🤝‍🧑" }, { word: "SCHOOL", image: "🏫" }, { word: "APPLE", image: "🍎" },
+        { word: "BANANA", image: "🍌" }, { word: "MILK", image: "🥛" }, { word: "WATER", image: "💧" },
+        { word: "EGG", image: "🥚" }, { word: "RICE", image: "🍚" }, { word: "CAKE", image: "🍰" },
+        { word: "DOG", image: "🐶" }, { word: "CAT", image: "🐱" }, { word: "BIRD", image: "🐦" },
+        { word: "FISH", image: "🐟" }, { word: "PIG", image: "🐷" }, { word: "DUCK", image: "🦆" },
+        { word: "LION", image: "🦁" }, { word: "RED", image: "🔴" }, { word: "BLUE", image: "🔵" },
+        { word: "GREEN", image: "🟢" }, { word: "YELLOW", image: "🟡" }, { word: "PINK", image: "🌸" },
+        { word: "BLACK", image: "⚫" }, { word: "WHITE", image: "⚪" }, { word: "HEAD", image: "🧑" },
+        { word: "EYE", image: "👁️" }, { word: "EAR", image: "👂" }, { word: "NOSE", image: "👃" },
+        { word: "MOUTH", image: "👄" }, { word: "HAND", image: "✋" }, { word: "FOOT", image: "🦶" },
+        { word: "HOME", image: "🏠" }, { word: "DAD", image: "👨" }, { word: "MOM", image: "👩" },
+        { word: "BROTHER", image: "👦" }, { word: "SISTER", image: "👧" }, { word: "BED", image: "🛏️" },
+        { word: "CHAIR", image: "🪑" }, { word: "TABLE", image: "🍽️" }, { word: "RUN", image: "🏃" },
+        { word: "WALK", image: "🚶" }, { word: "SIT", image: "🧎" }, { word: "STAND", image: "🧍" },
+        { word: "EAT", image: "😋" }, { word: "SLEEP", image: "😴" }
+    ];
+
+    let gameQuestions = [];
+    let currentQuestionIndex = 0;
+    let score = 0;
+    let currentGuess = "";
+
+    function shuffle(array) {
+        return array.sort(() => Math.random() - 0.5);
+    }
+
+    function playWordAudio() {
+        const utterance = new SpeechSynthesisUtterance(gameQuestions[currentQuestionIndex].word);
+        utterance.lang = 'en-US';
+        window.speechSynthesis.speak(utterance);
+    }
+
+    function startGame() {
+        currentQuestionIndex = 0;
+        score = 0;
+        document.getElementById("score").innerText = score;
+        document.getElementById("restart-btn").style.display = "none";
+        document.getElementById("game-area").style.display = "block";
+        gameQuestions = shuffle([...vocabularyDatabase]).slice(0, 10);
+        loadQuestion();
+    }
+
+    function loadQuestion() {
+        currentGuess = "";
+        document.getElementById("answer-box").innerText = "";
+        const data = gameQuestions[currentQuestionIndex];
+        document.getElementById("image-box").innerText = data.image;
+        document.getElementById("message").innerText = "";
+        
+        // สุ่มตัวอักษร
+        const letters = data.word.split('');
+        const shuffledLetters = shuffle([...letters]);
+        
+        const container = document.getElementById("letters-container");
+        container.innerHTML = "";
+        
+        shuffledLetters.forEach((letter, index) => {
+            const btn = document.createElement("button");
+            btn.className = "letter-btn";
+            btn.innerText = letter;
+            btn.id = "btn-" + index;
+            btn.onclick = () => addLetter(letter, btn.id);
+            container.appendChild(btn);
+        });
+    }
+
+    function addLetter(letter, btnId) {
+        document.getElementById(btnId).style.visibility = "hidden";
+        currentGuess += letter;
+        document.getElementById("answer-box").innerText = currentGuess;
+
+        if (currentGuess.length === gameQuestions[currentQuestionIndex].word.length) {
+            checkAnswer();
+        }
+    }
+
+    function clearAnswer() {
+        currentGuess = "";
+        document.getElementById("answer-box").innerText = "";
+        const buttons = document.querySelectorAll(".letter-btn");
+        buttons.forEach(btn => btn.style.visibility = "visible");
+    }
+
+    function checkAnswer() {
+        const correctWord = gameQuestions[currentQuestionIndex].word;
+        const msg = document.getElementById("message");
+        
+        if (currentGuess === correctWord) {
+            msg.innerText = "เก่งมาก! ⭐";
+            msg.className = "message correct";
+            score++;
+            document.getElementById("score").innerText = score;
+            playWordAudio();
+            setTimeout(() => {
+                currentQuestionIndex++;
+                if (currentQuestionIndex < gameQuestions.length) loadQuestion();
+                else endGame();
+            }, 1500);
+        } else {
+            msg.innerText = "ไม่ถูกนะ ลองใหม่! ❌";
+            msg.className = "message wrong";
+            setTimeout(clearAnswer, 1000);
+        }
+    }
+
+    function endGame() {
+        document.getElementById("game-area").style.display = "none";
+        document.getElementById("message").style.display = "block";
+        document.getElementById("message").innerText = `จบเกมแล้ว! ได้ ${score} คะแนน`;
+        document.getElementById("restart-btn").style.display = "block";
+        document.getElementById("home-btn").style.display = "block";
+    }
+
+    function backToHome() {
+        window.location.href = "index.html";
+    }
+
+    window.onload = startGame;
+</script>
+
+</body>
+</html>
