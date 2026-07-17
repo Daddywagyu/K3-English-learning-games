@@ -4,99 +4,124 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>เกมเรียงตัวอักษรภาษาอังกฤษ</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body { font-family: 'Comic Sans MS', 'Chalkboard SE', sans-serif; background-color: #ffeaa7; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; text-align: center; }
-        .game-container { background-color: white; border-radius: 25px; padding: 30px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 90%; max-width: 450px; }
-        h1 { color: #ff7675; font-size: 22px; margin-bottom: 10px; }
+        .game-container { background-color: white; border-radius: 25px; padding: 25px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 90%; max-width: 450px; }
+        h1 { color: #ff7675; font-size: 22px; margin-bottom: 15px; }
+        
+        /* Menu */
+        .category-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; max-height: 400px; overflow-y: auto; padding-right: 5px; }
+        .cat-btn { background-color: #00cec9; color: white; border: none; padding: 10px; border-radius: 12px; cursor: pointer; font-family: inherit; font-weight: bold; transition: transform 0.1s; }
+        .cat-btn:hover { background-color: #01a3a4; }
+        .cat-btn:active { transform: translateY(3px); }
+
+        /* Game */
         .score { font-size: 18px; color: #00cec9; font-weight: bold; margin-bottom: 15px; }
-        .image-box { font-size: 80px; margin: 10px 0; }
+        .image-box { font-size: 70px; margin: 10px 0; }
         .audio-btn { background-color: #fdcb6e; border: none; border-radius: 50%; width: 50px; height: 50px; font-size: 25px; cursor: pointer; box-shadow: 0 5px 0 #e1b12c; margin-bottom: 20px; }
-        
-        /* ช่องใส่คำตอบ */
         .answer-box { min-height: 60px; font-size: 35px; font-weight: bold; color: #2d3436; margin-bottom: 20px; border-bottom: 3px solid #dfe6e9; display: flex; justify-content: center; align-items: center; gap: 10px; }
-        
-        /* ปุ่มตัวอักษร */
         .letters-container { display: flex; justify-content: center; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; }
         .letter-btn { background-color: #74b9ff; color: white; border: none; border-radius: 10px; width: 50px; height: 50px; font-size: 24px; font-weight: bold; cursor: pointer; box-shadow: 0 3px 0 #0984e3; }
         .letter-btn:active { transform: translateY(3px); box-shadow: none; }
         
-        .controls { display: flex; justify-content: center; gap: 10px; }
-        .btn-clear { background-color: #ff7675; color: white; border: none; padding: 10px 20px; border-radius: 10px; cursor: pointer; font-size: 16px; }
-        
-        .message { font-size: 22px; font-weight: bold; margin-top: 15px; height: 30px; }
+        /* Controls */
+        .controls { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
+        .btn { border: none; padding: 10px 15px; border-radius: 10px; cursor: pointer; font-size: 14px; font-weight: bold; color: white; }
+        .btn-clear { background-color: #ff7675; }
+        .btn-menu { background-color: #a29bfe; }
+        .btn-home { background-color: #6c5ce7; }
+        .message { font-size: 20px; font-weight: bold; margin-top: 15px; height: 30px; }
         .correct { color: #00b894; }
         .wrong { color: #d63031; }
-        .restart-btn { background-color: #00b894; color: white; border: none; padding: 15px 30px; font-size: 18px; border-radius: 10px; cursor: pointer; display: none; margin: 0 auto; }
     </style>
 </head>
 <body>
 
 <div class="game-container">
-    <h1>เรียงคำศัพท์ให้ถูกต้อง!</h1>
-    <div class="score">คะแนน: <span id="score">0</span> / 10</div>
-    
-    <div id="game-area">
-        <div class="image-box" id="image-box">🍎</div>
-        <button class="audio-btn" onclick="playWordAudio()">🔊</button>
-        
-        <div class="answer-box" id="answer-box"></div>
-        <div class="letters-container" id="letters-container"></div>
-        
-        <div class="controls">
-            <button class="btn-clear" onclick="clearAnswer()">ลบคำตอบ</button>
-        </div>
-        
-        <div class="message" id="message"></div>
+    <div id="menu-section">
+        <h1>เลือกหมวดหมู่ (24 หมวด)</h1>
+        <div class="category-grid" id="category-grid"></div>
     </div>
 
-    <button class="restart-btn" id="restart-btn" onclick="startGame()">เริ่มเล่นใหม่ 🔄</button>
-    <button class="restart-btn" id="home-btn" onclick="backToHome()" style="background-color: #9b59b6; display: none; margin-top: 10px;">🏠 กลับสู่หน้าหลัก</button>
+    <div id="game-section" style="display: none;">
+        <h1>เรียงคำศัพท์!</h1>
+        <div class="score">คะแนน: <span id="score">0</span> / 5</div>
+        <div class="image-box" id="image-box">🍎</div>
+        <button class="audio-btn" onclick="playWordAudio()">🔊</button>
+        <div class="answer-box" id="answer-box"></div>
+        <div class="letters-container" id="letters-container"></div>
+        <div class="controls">
+            <button class="btn btn-clear" onclick="clearAnswer()">ลบคำตอบ</button>
+            <button class="btn btn-menu" onclick="showMenu()">เปลี่ยนหมวด</button>
+            <button class="btn btn-home" onclick="location.reload()">หน้าหลัก</button>
+        </div>
+        <div class="message" id="message"></div>
+    </div>
 </div>
 
 <script>
-    const vocabularyDatabase = [
-        { word: "BOOK", image: "📖" }, { word: "PEN", image: "🖊️" }, { word: "PENCIL", image: "✏️" },
-        { word: "BAG", image: "🎒" }, { word: "RULER", image: "📏" }, { word: "TEACHER", image: "👩‍🏫" },
-        { word: "FRIEND", image: "🧑‍🤝‍🧑" }, { word: "SCHOOL", image: "🏫" }, { word: "APPLE", image: "🍎" },
-        { word: "BANANA", image: "🍌" }, { word: "MILK", image: "🥛" }, { word: "WATER", image: "💧" },
-        { word: "EGG", image: "🥚" }, { word: "RICE", image: "🍚" }, { word: "CAKE", image: "🍰" },
-        { word: "DOG", image: "🐶" }, { word: "CAT", image: "🐱" }, { word: "BIRD", image: "🐦" },
-        { word: "FISH", image: "🐟" }, { word: "PIG", image: "🐷" }, { word: "DUCK", image: "🦆" },
-        { word: "LION", image: "🦁" }, { word: "RED", image: "🔴" }, { word: "BLUE", image: "🔵" },
-        { word: "GREEN", image: "🟢" }, { word: "YELLOW", image: "🟡" }, { word: "PINK", image: "🌸" },
-        { word: "BLACK", image: "⚫" }, { word: "WHITE", image: "⚪" }, { word: "HEAD", image: "🧑" },
-        { word: "EYE", image: "👁️" }, { word: "EAR", image: "👂" }, { word: "NOSE", image: "👃" },
-        { word: "MOUTH", image: "👄" }, { word: "HAND", image: "✋" }, { word: "FOOT", image: "🦶" },
-        { word: "HOME", image: "🏠" }, { word: "DAD", image: "👨" }, { word: "MOM", image: "👩" },
-        { word: "BROTHER", image: "👦" }, { word: "SISTER", image: "👧" }, { word: "BED", image: "🛏️" },
-        { word: "CHAIR", image: "🪑" }, { word: "TABLE", image: "🍽️" }, { word: "RUN", image: "🏃" },
-        { word: "WALK", image: "🚶" }, { word: "SIT", image: "🧎" }, { word: "STAND", image: "🧍" },
-        { word: "EAT", image: "😋" }, { word: "SLEEP", image: "😴" }
-    ];
+    const vocabularyDatabase = {
+        "ร่างกาย": [{ word: "HEAD", image: "🧑" }, { word: "EYE", image: "👁️" }, { word: "NOSE", image: "👃" }, { word: "MOUTH", image: "👄" }, { word: "EAR", image: "👂" }],
+        "ครอบครัว": [{ word: "DAD", image: "👨" }, { word: "MOM", image: "👩" }, { word: "BABY", image: "👶" }, { word: "SON", image: "👦" }, { word: "AUNT", image: "👩‍🦱" }],
+        "สี": [{ word: "RED", image: "🔴" }, { word: "BLUE", image: "🔵" }, { word: "GREEN", image: "🟢" }, { word: "PINK", image: "🌸" }, { word: "BLACK", image: "⚫" }],
+        "ตัวเลข": [{ word: "ONE", image: "1️⃣" }, { word: "TWO", image: "2️⃣" }, { word: "SIX", image: "6️⃣" }, { word: "TEN", image: "🔟" }, { word: "ZERO", image: "0️⃣" }],
+        "รูปร่าง": [{ word: "STAR", image: "⭐" }, { word: "OVAL", image: "🥚" }, { word: "BOX", image: "📦" }, { word: "RING", image: "💍" }, { word: "DOT", image: "🔘" }],
+        "ผลไม้": [{ word: "APPLE", image: "🍎" }, { word: "PEAR", image: "🍐" }, { word: "KIWI", image: "🥝" }, { word: "LIME", image: "🍋" }, { word: "PLUM", image: "🍑" }],
+        "ผัก": [{ word: "CORN", image: "🌽" }, { word: "PEAS", image: "🫛" }, { word: "YAM", image: "🍠" }, { word: "KALE", image: "🥬" }, { word: "BEAN", image: "🫘" }],
+        "อาหาร": [{ word: "RICE", image: "🍚" }, { word: "CAKE", image: "🍰" }, { word: "MILK", image: "🥛" }, { word: "FISH", image: "🐟" }, { word: "EGG", image: "🥚" }],
+        "สัตว์": [{ word: "DOG", image: "🐶" }, { word: "CAT", image: "🐱" }, { word: "BIRD", image: "🐦" }, { word: "PIG", image: "🐷" }, { word: "BEAR", image: "🐻" }],
+        "ห้องเรียน": [{ word: "BOOK", image: "📖" }, { word: "PEN", image: "🖊️" }, { word: "BAG", image: "🎒" }, { word: "INK", image: "🖋️" }, { word: "PAD", image: "🗒️" }],
+        "เสื้อผ้า": [{ word: "HAT", image: "👒" }, { word: "CAP", image: "🧢" }, { word: "VEST", image: "🦺" }, { word: "SHOE", image: "👞" }, { word: "BELT", image: "🥋" }],
+        "ของเล่น": [{ word: "BALL", image: "⚽" }, { word: "CAR", image: "🚗" }, { word: "DOLL", image: "🎎" }, { word: "TOY", image: "🧸" }, { word: "BAT", image: "🏏" }],
+        "บ้าน": [{ word: "HOME", image: "🏠" }, { word: "DOOR", image: "🚪" }, { word: "BED", image: "🛏️" }, { word: "WALL", image: "🧱" }, { word: "ROOF", image: "🏚️" }],
+        "โรงเรียน": [{ word: "ROOM", image: "🛏️" }, { word: "STUDY", image: "🧑‍🏫" }, { word: "TEST", image: "📝" }, { word: "WORK", image: "💼" }, { word: "READ", image: "📚" }],
+        "ธรรมชาติ": [{ word: "SUN", image: "☀️" }, { word: "MOON", image: "🌙" }, { word: "SKY", image: "🌤️" }, { word: "TREE", image: "🌳" }, { word: "SEA", image: "🌊" }],
+        "อากาศ": [{ word: "HOT", image: "🥵" }, { word: "COLD", image: "🥶" }, { word: "WIND", image: "🌬️" }, { word: "RAIN", image: "🌧️" }, { word: "SNOW", image: "❄️" }],
+        "ยานพาหนะ": [{ word: "BUS", image: "🚌" }, { word: "BOAT", image: "⛵" }, { word: "CAR", image: "🚗" }, { word: "TAXI", image: "🚕" }, { word: "SHIP", image: "🚢" }],
+        "คำกริยา": [{ word: "RUN", image: "🏃" }, { word: "WALK", image: "🚶" }, { word: "SIT", image: "🧎" }, { word: "EAT", image: "🍽️" }, { word: "JUMP", image: "🦘" }],
+        "คำคุณศัพท์": [{ word: "BIG", image: "🐘" }, { word: "TALL", image: "🦒" }, { word: "NEW", image: "🆕" }, { word: "OLD", image: "👴" }, { word: "GOOD", image: "👍" }],
+        "เวลา": [{ word: "DAY", image: "☀️" }, { word: "NIGHT", image: "🌃" }, { word: "HOUR", image: "⏳" }, { word: "DATE", image: "📅" }, { word: "LATE", image: "⏰" }],
+        "วัน": [
+            { word: "MONDAY", image: "🗓️" }, { word: "TUESDAY", image: "🗓️" }, { word: "WEDNESDAY", image: "🗓️" }, 
+            { word: "THURSDAY", image: "🗓️" }, { word: "FRIDAY", image: "🗓️" }, { word: "SATURDAY", image: "🗓️" }, { word: "SUNDAY", image: "🗓️" }
+        ],
+        "เดือน": [{ word: "MAY", image: "🌸" }, { word: "JUNE", image: "☀️" }, { word: "JULY", image: "🏖️" }, { word: "MARCH", image: "🍃" }, { word: "APRIL", image: "🌦️" }],
+        "ตำแหน่ง": [{ word: "IN", image: "📥" }, { word: "ON", image: "🔛" }, { word: "AT", image: "📍" }, { word: "UP", image: "🔼" }, { word: "BY", image: "🔜" }],
+        "อาชีพ": [{ word: "NURSE", image: "👩‍⚕️" }, { word: "CHEF", image: "🧑‍🍳" }, { word: "POLICE", image: "👮" }, { word: "BOSS", image: "👔" }, { word: "TEAM", image: "🤝" }]
+    };
 
     let gameQuestions = [];
     let currentQuestionIndex = 0;
     let score = 0;
     let currentGuess = "";
 
-    function shuffle(array) {
-        return array.sort(() => Math.random() - 0.5);
+    function initMenu() {
+        const grid = document.getElementById("category-grid");
+        Object.keys(vocabularyDatabase).forEach(cat => {
+            const btn = document.createElement("button");
+            btn.className = "cat-btn";
+            btn.innerText = cat;
+            btn.onclick = () => startRound(cat);
+            grid.appendChild(btn);
+        });
     }
 
-    function playWordAudio() {
-        const utterance = new SpeechSynthesisUtterance(gameQuestions[currentQuestionIndex].word);
-        utterance.lang = 'en-US';
-        window.speechSynthesis.speak(utterance);
-    }
-
-    function startGame() {
-        currentQuestionIndex = 0;
+    function startRound(catName) {
+        const allWords = vocabularyDatabase[catName];
+        // สุ่ม 5 คำ (หรือเอาทั้งหมดถ้ามีไม่ถึง 5)
+        gameQuestions = [...allWords].sort(() => Math.random() - 0.5).slice(0, 5);
         score = 0;
+        currentQuestionIndex = 0;
         document.getElementById("score").innerText = score;
-        document.getElementById("restart-btn").style.display = "none";
-        document.getElementById("game-area").style.display = "block";
-        gameQuestions = shuffle([...vocabularyDatabase]).slice(0, 10);
+        document.getElementById("menu-section").style.display = "none";
+        document.getElementById("game-section").style.display = "block";
         loadQuestion();
+    }
+
+    function showMenu() {
+        document.getElementById("menu-section").style.display = "block";
+        document.getElementById("game-section").style.display = "none";
     }
 
     function loadQuestion() {
@@ -106,14 +131,13 @@
         document.getElementById("image-box").innerText = data.image;
         document.getElementById("message").innerText = "";
         
-        // สุ่มตัวอักษร
         const letters = data.word.split('');
-        const shuffledLetters = shuffle([...letters]);
+        const shuffled = [...letters].sort(() => Math.random() - 0.5);
         
         const container = document.getElementById("letters-container");
         container.innerHTML = "";
         
-        shuffledLetters.forEach((letter, index) => {
+        shuffled.forEach((letter, index) => {
             const btn = document.createElement("button");
             btn.className = "letter-btn";
             btn.innerText = letter;
@@ -127,7 +151,6 @@
         document.getElementById(btnId).style.visibility = "hidden";
         currentGuess += letter;
         document.getElementById("answer-box").innerText = currentGuess;
-
         if (currentGuess.length === gameQuestions[currentQuestionIndex].word.length) {
             checkAnswer();
         }
@@ -136,14 +159,12 @@
     function clearAnswer() {
         currentGuess = "";
         document.getElementById("answer-box").innerText = "";
-        const buttons = document.querySelectorAll(".letter-btn");
-        buttons.forEach(btn => btn.style.visibility = "visible");
+        document.querySelectorAll(".letter-btn").forEach(btn => btn.style.visibility = "visible");
     }
 
     function checkAnswer() {
         const correctWord = gameQuestions[currentQuestionIndex].word;
         const msg = document.getElementById("message");
-        
         if (currentGuess === correctWord) {
             msg.innerText = "เก่งมาก! ⭐";
             msg.className = "message correct";
@@ -153,28 +174,25 @@
             setTimeout(() => {
                 currentQuestionIndex++;
                 if (currentQuestionIndex < gameQuestions.length) loadQuestion();
-                else endGame();
-            }, 1500);
+                else {
+                    msg.innerText = "จบแล้ว! ได้คะแนน: " + score;
+                    setTimeout(showMenu, 2000);
+                }
+            }, 1000);
         } else {
-            msg.innerText = "ไม่ถูกนะ ลองใหม่! ❌";
+            msg.innerText = "ลองใหม่นะ! ❌";
             msg.className = "message wrong";
             setTimeout(clearAnswer, 1000);
         }
     }
 
-    function endGame() {
-        document.getElementById("game-area").style.display = "none";
-        document.getElementById("message").style.display = "block";
-        document.getElementById("message").innerText = `จบเกมแล้ว! ได้ ${score} คะแนน`;
-        document.getElementById("restart-btn").style.display = "block";
-        document.getElementById("home-btn").style.display = "block";
+    function playWordAudio() {
+        const utterance = new SpeechSynthesisUtterance(gameQuestions[currentQuestionIndex].word);
+        utterance.lang = 'en-US';
+        window.speechSynthesis.speak(utterance);
     }
 
-    function backToHome() {
-        window.location.href = "index.html";
-    }
-
-    window.onload = startGame;
+    window.onload = initMenu;
 </script>
 
 </body>
