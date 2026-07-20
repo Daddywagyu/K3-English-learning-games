@@ -42,6 +42,7 @@
     <div id="menu-section">
         <h1>เลือกหมวดหมู่ (24 หมวด)</h1>
         <div class="category-grid" id="category-grid"></div>
+        <button class="btn btn-home" style="margin-top: 10px;" onclick="location.href='index.html'">🏠 กลับสู่หน้าหลัก</button>
     </div>
 
     <div id="game-section" style="display: none;">
@@ -54,7 +55,7 @@
         <div class="controls">
             <button class="btn btn-clear" onclick="clearAnswer()">ลบคำตอบ</button>
             <button class="btn btn-menu" onclick="showMenu()">เปลี่ยนหมวด</button>
-            <button class="btn btn-home" onclick="location.reload()">หน้าหลัก</button>
+            <button class="btn btn-home" onclick="location.href='index.html'">หน้าหลัก</button>
         </div>
         <div class="message" id="message"></div>
     </div>
@@ -62,33 +63,30 @@
 
 <script>
     const vocabularyDatabase = {
-        "ร่างกาย": [{ word: "HEAD", image: "🧑" }, { word: "EYE", image: "👁️" }, { word: "NOSE", image: "👃" }, { word: "MOUTH", image: "👄" }, { word: "EAR", image: "👂" }],
-        "ครอบครัว": [{ word: "DAD", image: "👨" }, { word: "MOM", image: "👩" }, { word: "BABY", image: "👶" }, { word: "SON", image: "👦" }, { word: "AUNT", image: "👩‍🦱" }],
-        "สี": [{ word: "RED", image: "🔴" }, { word: "BLUE", image: "🔵" }, { word: "GREEN", image: "🟢" }, { word: "PINK", image: "🌸" }, { word: "BLACK", image: "⚫" }],
-        "ตัวเลข": [{ word: "ONE", image: "1️⃣" }, { word: "TWO", image: "2️⃣" }, { word: "SIX", image: "6️⃣" }, { word: "TEN", image: "🔟" }, { word: "ZERO", image: "0️⃣" }],
-        "รูปร่าง": [{ word: "STAR", image: "⭐" }, { word: "OVAL", image: "🥚" }, { word: "BOX", image: "📦" }, { word: "RING", image: "💍" }, { word: "DOT", image: "🔘" }],
-        "ผลไม้": [{ word: "APPLE", image: "🍎" }, { word: "PEAR", image: "🍐" }, { word: "KIWI", image: "🥝" }, { word: "LIME", image: "🍋" }, { word: "PLUM", image: "🍑" }],
-        "ผัก": [{ word: "CORN", image: "🌽" }, { word: "PEAS", image: "🫛" }, { word: "YAM", image: "🍠" }, { word: "KALE", image: "🥬" }, { word: "BEAN", image: "🫘" }],
-        "อาหาร": [{ word: "RICE", image: "🍚" }, { word: "CAKE", image: "🍰" }, { word: "MILK", image: "🥛" }, { word: "FISH", image: "🐟" }, { word: "EGG", image: "🥚" }],
-        "สัตว์": [{ word: "DOG", image: "🐶" }, { word: "CAT", image: "🐱" }, { word: "BIRD", image: "🐦" }, { word: "PIG", image: "🐷" }, { word: "BEAR", image: "🐻" }],
-        "ห้องเรียน": [{ word: "BOOK", image: "📖" }, { word: "PEN", image: "🖊️" }, { word: "BAG", image: "🎒" }, { word: "INK", image: "🖋️" }, { word: "PAD", image: "🗒️" }],
-        "เสื้อผ้า": [{ word: "HAT", image: "👒" }, { word: "CAP", image: "🧢" }, { word: "VEST", image: "🦺" }, { word: "SHOE", image: "👞" }, { word: "BELT", image: "🥋" }],
-        "ของเล่น": [{ word: "BALL", image: "⚽" }, { word: "CAR", image: "🚗" }, { word: "DOLL", image: "🎎" }, { word: "TOY", image: "🧸" }, { word: "BAT", image: "🏏" }],
-        "บ้าน": [{ word: "HOME", image: "🏠" }, { word: "DOOR", image: "🚪" }, { word: "BED", image: "🛏️" }, { word: "WALL", image: "🧱" }, { word: "ROOF", image: "🏚️" }],
-        "โรงเรียน": [{ word: "ROOM", image: "🛏️" }, { word: "STUDY", image: "🧑‍🏫" }, { word: "TEST", image: "📝" }, { word: "WORK", image: "💼" }, { word: "READ", image: "📚" }],
-        "ธรรมชาติ": [{ word: "SUN", image: "☀️" }, { word: "MOON", image: "🌙" }, { word: "SKY", image: "🌤️" }, { word: "TREE", image: "🌳" }, { word: "SEA", image: "🌊" }],
-        "อากาศ": [{ word: "HOT", image: "🥵" }, { word: "COLD", image: "🥶" }, { word: "WIND", image: "🌬️" }, { word: "RAIN", image: "🌧️" }, { word: "SNOW", image: "❄️" }],
-        "ยานพาหนะ": [{ word: "BUS", image: "🚌" }, { word: "BOAT", image: "⛵" }, { word: "CAR", image: "🚗" }, { word: "TAXI", image: "🚕" }, { word: "SHIP", image: "🚢" }],
-        "คำกริยา": [{ word: "RUN", image: "🏃" }, { word: "WALK", image: "🚶" }, { word: "SIT", image: "🧎" }, { word: "EAT", image: "🍽️" }, { word: "JUMP", image: "🦘" }],
-        "คำคุณศัพท์": [{ word: "BIG", image: "🐘" }, { word: "TALL", image: "🦒" }, { word: "NEW", image: "🆕" }, { word: "OLD", image: "👴" }, { word: "GOOD", image: "👍" }],
-        "เวลา": [{ word: "DAY", image: "☀️" }, { word: "NIGHT", image: "🌃" }, { word: "HOUR", image: "⏳" }, { word: "DATE", image: "📅" }, { word: "LATE", image: "⏰" }],
-        "วัน": [
-            { word: "MONDAY", image: "🗓️" }, { word: "TUESDAY", image: "🗓️" }, { word: "WEDNESDAY", image: "🗓️" }, 
-            { word: "THURSDAY", image: "🗓️" }, { word: "FRIDAY", image: "🗓️" }, { word: "SATURDAY", image: "🗓️" }, { word: "SUNDAY", image: "🗓️" }
-        ],
-        "เดือน": [{ word: "MAY", image: "🌸" }, { word: "JUNE", image: "☀️" }, { word: "JULY", image: "🏖️" }, { word: "MARCH", image: "🍃" }, { word: "APRIL", image: "🌦️" }],
-        "ตำแหน่ง": [{ word: "IN", image: "📥" }, { word: "ON", image: "🔛" }, { word: "AT", image: "📍" }, { word: "UP", image: "🔼" }, { word: "BY", image: "🔜" }],
-        "อาชีพ": [{ word: "NURSE", image: "👩‍⚕️" }, { word: "CHEF", image: "🧑‍🍳" }, { word: "POLICE", image: "👮" }, { word: "BOSS", image: "👔" }, { word: "TEAM", image: "🤝" }]
+        "ร่างกาย": [{ word: "HEAD", image: "🧑" }, { word: "HAIR", image: "💇" }, { word: "FACE", image: "👱" }, { word: "EYE", image: "👁️" }, { word: "EAR", image: "👂" }, { word: "NOSE", image: "👃" }, { word: "MOUTH", image: "👄" }, { word: "TOOTH", image: "🦷" }, { word: "TONGUE", image: "👅" }, { word: "NECK", image: "🧣" }, { word: "SHOULDER", image: "🤷" }, { word: "ARM", image: "💪" }, { word: "HAND", image: "✋" }, { word: "FINGER", image: "👆" }, { word: "LEG", image: "🦵" }, { word: "KNEE", image: "🧎" }, { word: "FOOT", image: "🦶" }, { word: "TOE", image: "👣" }, { word: "BACK", image: "🧍" }, { word: "STOMACH", image: "🤰" }],
+        "ครอบครัว": [{ word: "FATHER", image: "👨" }, { word: "DAD", image: "👨" }, { word: "MOTHER", image: "👩" }, { word: "MOM", image: "👩" }, { word: "BROTHER", image: "👦" }, { word: "SISTER", image: "👧" }, { word: "BABY", image: "👶" }, { word: "GRANDFATHER", image: "👴" }, { word: "GRANDMOTHER", image: "👵" }, { word: "UNCLE", image: "👨" }, { word: "AUNT", image: "👩" }, { word: "COUSIN", image: "🧒" }, { word: "FAMILY", image: "👨‍👩‍👧‍👦" }],
+        "สี": [{ word: "RED", image: "🔴" }, { word: "BLUE", image: "🔵" }, { word: "YELLOW", image: "🟡" }, { word: "GREEN", image: "🟢" }, { word: "ORANGE", image: "🟠" }, { word: "PURPLE", image: "🟣" }, { word: "PINK", image: "🌸" }, { word: "BROWN", image: "🟤" }, { word: "BLACK", image: "⚫" }, { word: "WHITE", image: "⚪" }, { word: "GRAY", image: "🔘" }, { word: "GOLD", image: "🪙" }, { word: "SILVER", image: "🥈" }],
+        "ตัวเลข": [{ word: "ZERO", image: "0️⃣" }, { word: "ONE", image: "1️⃣" }, { word: "TWO", image: "2️⃣" }, { word: "THREE", image: "3️⃣" }, { word: "FOUR", image: "4️⃣" }, { word: "FIVE", image: "5️⃣" }, { word: "SIX", image: "6️⃣" }, { word: "SEVEN", image: "7️⃣" }, { word: "EIGHT", image: "8️⃣" }, { word: "NINE", image: "9️⃣" }, { word: "TEN", image: "🔟" }, { word: "ELEVEN", image: "🔢" }, { word: "TWELVE", image: "🔢" }, { word: "THIRTEEN", image: "🔢" }, { word: "FOURTEEN", image: "🔢" }, { word: "FIFTEEN", image: "🔢" }, { word: "SIXTEEN", image: "🔢" }, { word: "SEVENTEEN", image: "🔢" }, { word: "EIGHTEEN", image: "🔢" }, { word: "NINETEEN", image: "🔢" }, { word: "TWENTY", image: "🔢" }, { word: "THIRTY", image: "🔢" }, { word: "FORTY", image: "🔢" }, { word: "FIFTY", image: "🔢" }, { word: "ONE HUNDRED", image: "💯" }],
+        "รูปร่าง": [{ word: "CIRCLE", image: "⭕" }, { word: "SQUARE", image: "🟥" }, { word: "TRIANGLE", image: "🔺" }, { word: "RECTANGLE", image: "🪧" }, { word: "OVAL", image: "🥚" }, { word: "STAR", image: "⭐" }, { word: "HEART", image: "❤️" }, { word: "DIAMOND", image: "♦️" }, { word: "CUBE", image: "🧊" }, { word: "SPHERE", image: "🔮" }],
+        "ผลไม้": [{ word: "APPLE", image: "🍎" }, { word: "BANANA", image: "🍌" }, { word: "ORANGE", image: "🍊" }, { word: "MANGO", image: "🥭" }, { word: "WATERMELON", image: "🍉" }, { word: "PINEAPPLE", image: "🍍" }, { word: "GRAPE", image: "🍇" }, { word: "STRAWBERRY", image: "🍓" }, { word: "LEMON", image: "🍋" }, { word: "COCONUT", image: "🥥" }, { word: "PAPAYA", image: "🍈" }, { word: "PEAR", image: "🍐" }, { word: "PEACH", image: "🍑" }, { word: "CHERRY", image: "🍒" }],
+        "ผัก": [{ word: "CARROT", image: "🥕" }, { word: "TOMATO", image: "🍅" }, { word: "POTATO", image: "🥔" }, { word: "ONION", image: "🧅" }, { word: "CUCUMBER", image: "🥒" }, { word: "PUMPKIN", image: "🎃" }, { word: "CORN", image: "🌽" }, { word: "BROCCOLI", image: "🥦" }, { word: "CABBAGE", image: "🥬" }, { word: "LETTUCE", image: "🥗" }, { word: "MUSHROOM", image: "🍄" }, { word: "PEA", image: "🫛" }],
+        "อาหารและเครื่องดื่ม": [{ word: "RICE", image: "🍚" }, { word: "BREAD", image: "🍞" }, { word: "EGG", image: "🥚" }, { word: "MILK", image: "🥛" }, { word: "WATER", image: "💧" }, { word: "JUICE", image: "🧃" }, { word: "FISH", image: "🐟" }, { word: "CHICKEN", image: "🍗" }, { word: "MEAT", image: "🥩" }, { word: "SOUP", image: "🥣" }, { word: "NOODLES", image: "🍜" }, { word: "ICE CREAM", image: "🍦" }, { word: "CAKE", image: "🍰" }, { word: "COOKIE", image: "🍪" }, { word: "CANDY", image: "🍬" }],
+        "สัตว์": [{ word: "DOG", image: "🐶" }, { word: "CAT", image: "🐱" }, { word: "BIRD", image: "🐦" }, { word: "FISH", image: "🐟" }, { word: "RABBIT", image: "🐰" }, { word: "DUCK", image: "🦆" }, { word: "CHICKEN", image: "🐔" }, { word: "COW", image: "🐮" }, { word: "PIG", image: "🐷" }, { word: "HORSE", image: "🐴" }, { word: "ELEPHANT", image: "🐘" }, { word: "TIGER", image: "🐯" }, { word: "LION", image: "🦁" }, { word: "MONKEY", image: "🐵" }, { word: "BEAR", image: "🐻" }, { word: "ZEBRA", image: "🦓" }, { word: "GIRAFFE", image: "🦒" }, { word: "CROCODILE", image: "🐊" }, { word: "SNAKE", image: "🐍" }, { word: "TURTLE", image: "🐢" }, { word: "FROG", image: "🐸" }],
+        "สิ่งของในห้องเรียน": [{ word: "BOOK", image: "📖" }, { word: "PENCIL", image: "✏️" }, { word: "ERASER", image: "🧽" }, { word: "RULER", image: "📏" }, { word: "PEN", image: "🖊️" }, { word: "CRAYON", image: "🖍️" }, { word: "MARKER", image: "🖍️" }, { word: "PAPER", image: "📄" }, { word: "BAG", image: "🎒" }, { word: "DESK", image: "🪑" }, { word: "CHAIR", image: "🪑" }, { word: "BOARD", image: "🏫" }, { word: "GLUE", image: "🧴" }, { word: "SCISSORS", image: "✂️" }],
+        "เสื้อผ้า": [{ word: "SHIRT", image: "👔" }, { word: "T-SHIRT", image: "👕" }, { word: "PANTS", image: "👖" }, { word: "SHORTS", image: "🩳" }, { word: "SKIRT", image: "👗" }, { word: "DRESS", image: "👗" }, { word: "SOCKS", image: "🧦" }, { word: "SHOES", image: "👞" }, { word: "HAT", image: "👒" }, { word: "JACKET", image: "🧥" }, { word: "COAT", image: "🧥" }, { word: "GLOVES", image: "🧤" }],
+        "ของเล่น": [{ word: "BALL", image: "⚽" }, { word: "DOLL", image: "🪆" }, { word: "ROBOT", image: "🤖" }, { word: "CAR", image: "🚗" }, { word: "TRAIN", image: "🚂" }, { word: "AIRPLANE", image: "✈️" }, { word: "KITE", image: "🪁" }, { word: "TEDDY BEAR", image: "🧸" }, { word: "PUZZLE", image: "🧩" }, { word: "BLOCKS", image: "🧱" }],
+        "บ้าน": [{ word: "HOUSE", image: "🏠" }, { word: "DOOR", image: "🚪" }, { word: "WINDOW", image: "🪟" }, { word: "BED", image: "🛏️" }, { word: "PILLOW", image: "🛌" }, { word: "BLANKET", image: "🛏️" }, { word: "TABLE", image: "🍽️" }, { word: "SOFA", image: "🛋️" }, { word: "TELEVISION", image: "📺" }, { word: "LAMP", image: "💡" }, { word: "KITCHEN", image: "🍳" }, { word: "BATHROOM", image: "🛁" }],
+        "โรงเรียน": [{ word: "TEACHER", image: "👩‍🏫" }, { word: "STUDENT", image: "🧑‍🎓" }, { word: "FRIEND", image: "🧑‍🤝‍🧑" }, { word: "CLASSROOM", image: "🏫" }, { word: "PLAYGROUND", image: "🛝" }, { word: "SCHOOL BUS", image: "🚌" }, { word: "LUNCH", image: "🍱" }, { word: "BACKPACK", image: "🎒" }, { word: "HOMEWORK", image: "📚" }],
+        "ธรรมชาติ": [{ word: "SUN", image: "☀️" }, { word: "MOON", image: "🌙" }, { word: "STAR", image: "⭐" }, { word: "SKY", image: "🌤️" }, { word: "CLOUD", image: "☁️" }, { word: "RAIN", image: "🌧️" }, { word: "WIND", image: "🌬️" }, { word: "TREE", image: "🌳" }, { word: "FLOWER", image: "🌻" }, { word: "GRASS", image: "🌿" }, { word: "RIVER", image: "🏞️" }, { word: "MOUNTAIN", image: "⛰️" }, { word: "SEA", image: "🌊" }],
+        "สภาพอากาศ": [{ word: "SUNNY", image: "☀️" }, { word: "CLOUDY", image: "☁️" }, { word: "RAINY", image: "🌧️" }, { word: "WINDY", image: "🌬️" }, { word: "HOT", image: "🥵" }, { word: "COLD", image: "🥶" }, { word: "WARM", image: "🌡️" }, { word: "COOL", image: "😎" }, { word: "STORM", image: "⛈️" }],
+        "ยานพาหนะ": [{ word: "CAR", image: "🚗" }, { word: "BUS", image: "🚌" }, { word: "TRAIN", image: "🚆" }, { word: "BICYCLE", image: "🚲" }, { word: "MOTORCYCLE", image: "🏍️" }, { word: "AIRPLANE", image: "✈️" }, { word: "BOAT", image: "⛵" }, { word: "SHIP", image: "🚢" }, { word: "TRUCK", image: "🚚" }, { word: "TAXI", image: "🚕" }],
+        "คำกริยาพื้นฐาน": [{ word: "EAT", image: "🍽️" }, { word: "DRINK", image: "🥤" }, { word: "SLEEP", image: "😴" }, { word: "WALK", image: "🚶" }, { word: "RUN", image: "🏃" }, { word: "JUMP", image: "🦘" }, { word: "SIT", image: "🪑" }, { word: "STAND", image: "🧍" }, { word: "READ", image: "📖" }, { word: "WRITE", image: "✍️" }, { word: "DRAW", image: "🎨" }, { word: "SING", image: "🎤" }, { word: "DANCE", image: "💃" }, { word: "SWIM", image: "🏊" }, { word: "PLAY", image: "🎮" }, { word: "OPEN", image: "👐" }, { word: "CLOSE", image: "✊" }, { word: "WASH", image: "🧼" }, { word: "BRUSH", image: "🪥" }, { word: "LISTEN", image: "🎧" }, { word: "LOOK", image: "👀" }, { word: "WATCH", image: "📺" }, { word: "TALK", image: "🗣️" }, { word: "HELP", image: "🤝" }, { word: "SMILE", image: "😊" }, { word: "CRY", image: "😭" }, { word: "LAUGH", image: "😂" }],
+        "คำคุณศัพท์": [{ word: "BIG", image: "🐘" }, { word: "SMALL", image: "🐜" }, { word: "TALL", image: "🦒" }, { word: "SHORT", image: "📏" }, { word: "LONG", image: "🐍" }, { word: "HAPPY", image: "😁" }, { word: "SAD", image: "😔" }, { word: "ANGRY", image: "😠" }, { word: "GOOD", image: "👍" }, { word: "BAD", image: "👎" }, { word: "FAST", image: "🐆" }, { word: "SLOW", image: "🐢" }, { word: "CLEAN", image: "✨" }, { word: "DIRTY", image: "💩" }, { word: "NEW", image: "🆕" }, { word: "OLD", image: "👴" }, { word: "BEAUTIFUL", image: "🦋" }, { word: "PRETTY", image: "🎀" }],
+        "เวลา": [{ word: "MORNING", image: "🌅" }, { word: "AFTERNOON", image: "🌞" }, { word: "EVENING", image: "🌇" }, { word: "NIGHT", image: "🌃" }, { word: "TODAY", image: "📅" }, { word: "TOMORROW", image: "⏭️" }, { word: "YESTERDAY", image: "⏮️" }, { word: "DAY", image: "☀️" }, { word: "WEEK", image: "🗓️" }, { word: "MONTH", image: "🌙" }, { word: "YEAR", image: "🌍" }],
+        "วันในสัปดาห์": [{ word: "MONDAY", image: "💛" }, { word: "TUESDAY", image: "🩷" }, { word: "WEDNESDAY", image: "💚" }, { word: "THURSDAY", image: "🧡" }, { word: "FRIDAY", image: "💙" }, { word: "SATURDAY", image: "💜" }, { word: "SUNDAY", image: "❤️" }],
+        "เดือน": [{ word: "JANUARY", image: "🗓️" }, { word: "FEBRUARY", image: "🗓️" }, { word: "MARCH", image: "🗓️" }, { word: "APRIL", image: "🗓️" }, { word: "MAY", image: "🗓️" }, { word: "JUNE", image: "🗓️" }, { word: "JULY", image: "🗓️" }, { word: "AUGUST", image: "🗓️" }, { word: "SEPTEMBER", image: "🗓️" }, { word: "OCTOBER", image: "🗓️" }, { word: "NOVEMBER", image: "🗓️" }, { word: "DECEMBER", image: "🗓️" }],
+        "คำบอกตำแหน่ง": [{ word: "IN", image: "📥" }, { word: "ON", image: "🔛" }, { word: "UNDER", image: "🔽" }, { word: "BEHIND", image: "🔙" }, { word: "IN FRONT OF", image: "🔜" }, { word: "BETWEEN", image: "↔️" }, { word: "NEXT TO", image: "➡️" }, { word: "NEAR", image: "🔍" }],
+        "อาชีพ": [{ word: "TEACHER", image: "👩‍🏫" }, { word: "DOCTOR", image: "👨‍⚕️" }, { word: "NURSE", image: "👩‍⚕️" }, { word: "POLICE", image: "👮" }, { word: "FIREFIGHTER", image: "🧑‍🚒" }, { word: "FARMER", image: "🧑‍🌾" }, { word: "CHEF", image: "🧑‍🍳" }, { word: "DRIVER", image: "🚖" }, { word: "PILOT", image: "🧑‍✈️" }, { word: "SOLDIER", image: "🪖" }, { word: "DENTIST", image: "🦷" }, { word: "ENGINEER", image: "👷" }, { word: "ARTIST", image: "🧑‍🎨" }, { word: "SINGER", image: "🧑‍🎤" }, { word: "ACTOR", image: "🎭" }, { word: "SHOPKEEPER", image: "🏪" }, { word: "POSTMAN", image: "📮" }, { word: "STUDENT", image: "🧑‍🎓" }]
     };
 
     let gameQuestions = [];
@@ -124,6 +122,11 @@
         document.getElementById("game-section").style.display = "none";
     }
 
+    function puzzleLetters(word) {
+        // เอาเฉพาะตัวอักษร A-Z มาเรียง (ตัดช่องว่างและขีดกลางออก เช่น "T-SHIRT" -> TSHIRT)
+        return word.replace(/[^A-Z]/g, '').split('');
+    }
+
     function loadQuestion() {
         currentGuess = "";
         document.getElementById("answer-box").innerText = "";
@@ -131,7 +134,7 @@
         document.getElementById("image-box").innerText = data.image;
         document.getElementById("message").innerText = "";
         
-        const letters = data.word.split('');
+        const letters = puzzleLetters(data.word);
         const shuffled = [...letters].sort(() => Math.random() - 0.5);
         
         const container = document.getElementById("letters-container");
@@ -151,7 +154,7 @@
         document.getElementById(btnId).style.visibility = "hidden";
         currentGuess += letter;
         document.getElementById("answer-box").innerText = currentGuess;
-        if (currentGuess.length === gameQuestions[currentQuestionIndex].word.length) {
+        if (currentGuess.length === puzzleLetters(gameQuestions[currentQuestionIndex].word).length) {
             checkAnswer();
         }
     }
@@ -163,7 +166,7 @@
     }
 
     function checkAnswer() {
-        const correctWord = gameQuestions[currentQuestionIndex].word;
+        const correctWord = puzzleLetters(gameQuestions[currentQuestionIndex].word).join('');
         const msg = document.getElementById("message");
         if (currentGuess === correctWord) {
             msg.innerText = "เก่งมาก! ⭐";
