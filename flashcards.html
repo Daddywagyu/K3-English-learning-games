@@ -29,6 +29,7 @@
 <div class="container" id="menu-screen">
     <h1>เลือกหมวดหมู่ที่อยากเรียน</h1>
     <div class="category-grid" id="category-grid"></div>
+    <button class="btn-back-menu" onclick="backToHome()" style="background-color: #9b59b6; margin-top: 20px;">🏠 กลับสู่หน้าหลัก</button>
 </div>
 
 <div class="container" id="card-screen">
@@ -229,8 +230,13 @@
         speak(item.e, item.t);
     }
 
+    // เก็บ reference ของ utterance ไว้ที่ global เพื่อกัน iPad/Safari
+    // เก็บขยะ (garbage collect) ตัวแปรทิ้งก่อนพูดจบ ซึ่งเป็นสาเหตุที่ทำให้ไม่มีเสียงบน iPad
+    let activeUtterances = [];
+
     function speak(word, meaning) {
         window.speechSynthesis.cancel();
+        activeUtterances = [];
 
         // 1. การสะกด (ภาษาอังกฤษ, ช้า)
         let spell = word.split('').join(' ');
@@ -247,6 +253,9 @@
         let meaningMsg = new SpeechSynthesisUtterance(meaning);
         meaningMsg.lang = 'th-TH'; // กำหนดให้เป็นภาษาไทยโดยเฉพาะ
         meaningMsg.rate = 0.5;
+
+        // เก็บ reference ไว้กัน GC บน iPad/Safari
+        activeUtterances.push(spellMsg, wordMsg, meaningMsg);
 
         // เชื่อมต่อลำดับเสียงให้พูดต่อกัน
         spellMsg.onend = () => window.speechSynthesis.speak(wordMsg);
