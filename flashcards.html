@@ -231,37 +231,65 @@
     }
 
     // เก็บ reference ของ utterance ไว้ที่ global เพื่อกัน iPad/Safari
-    // เก็บขยะ (garbage collect) ตัวแปรทิ้งก่อนพูดจบ ซึ่งเป็นสาเหตุที่ทำให้ไม่มีเสียงบน iPad
     let activeUtterances = [];
+
+    // --- แก้ปัญหาไม่มีเสียงบน iPad/iOS (Chrome และ Safari บน iOS ใช้ WebKit engine เดียวกัน) ---
+    // 1) เสียง (voices) บน iOS มักโหลดไม่เสร็จตอนเปิดหน้าเว็บ ต้องรอ event voiceschanged
+    // 2) ต้อง "ปลดล็อก" speechSynthesis ด้วยการพูดสั้น ๆ ภายใน user gesture ครั้งแรก (แตะจอ)
+    let voicesLoaded = false;
+    function loadVoices() {
+        const v = window.speechSynthesis.getVoices();
+        if (v.length > 0) voicesLoaded = true;
+    }
+    loadVoices();
+    if ('onvoiceschanged' in window.speechSynthesis) {
+        window.speechSynthesis.onvoiceschanged = loadVoices;
+    }
+
+    let audioUnlocked = false;
+    function unlockAudio() {
+        if (audioUnlocked) return;
+        audioUnlocked = true;
+        const primer = new SpeechSynthesisUtterance(' ');
+        primer.volume = 0; // ไม่ให้ได้ยินตัว primer เอง
+        window.speechSynthesis.speak(primer);
+        document.removeEventListener('touchend', unlockAudio);
+        document.removeEventListener('click', unlockAudio);
+    }
+    document.addEventListener('touchend', unlockAudio, { once: true });
+    document.addEventListener('click', unlockAudio, { once: true });
 
     function speak(word, meaning) {
         window.speechSynthesis.cancel();
         activeUtterances = [];
 
-        // 1. การสะกด (ภาษาอังกฤษ, ช้า)
-        let spell = word.split('').join(' ');
-        let spellMsg = new SpeechSynthesisUtterance(spell);
-        spellMsg.lang = 'en-US';
-        spellMsg.rate = 0.3;
+        // iOS: cancel() เป็น async ถ้าเรียก speak() ต่อทันทีจะเงียบสนิท ต้องหน่วงเล็กน้อย
+        setTimeout(() => {
+            // 1. การสะกด (ภาษาอังกฤษ, ช้า)
+            let spell = word.split('').join(' ');
+            let spellMsg = new SpeechSynthesisUtterance(spell);
+            spellMsg.lang = 'en-US';
+            spellMsg.rate = 0.3;
 
-        // 2. คำศัพท์ (ภาษาอังกฤษ, ปกติ)
-        let wordMsg = new SpeechSynthesisUtterance(word);
-        wordMsg.lang = 'en-US';
-        wordMsg.rate = 0.5;
+            // 2. คำศัพท์ (ภาษาอังกฤษ, ปกติ)
+            let wordMsg = new SpeechSynthesisUtterance(word);
+            wordMsg.lang = 'en-US';
+            wordMsg.rate = 0.5;
 
-        // 3. ความหมาย (ภาษาไทย)
-        let meaningMsg = new SpeechSynthesisUtterance(meaning);
-        meaningMsg.lang = 'th-TH'; // กำหนดให้เป็นภาษาไทยโดยเฉพาะ
-        meaningMsg.rate = 0.5;
+            // 3. ความหมาย (ภาษาไทย)
+            let meaningMsg = new SpeechSynthesisUtterance(meaning);
+            meaningMsg.lang = 'th-TH'; // กำหนดให้เป็นภาษาไทยโดยเฉพาะ
+            meaningMsg.rate = 0.5;
 
-        // เก็บ reference ไว้กัน GC บน iPad/Safari
-        activeUtterances.push(spellMsg, wordMsg, meaningMsg);
+            // เก็บ reference ไว้กัน GC บน iPad/Safari
+            activeUtterances.push(spellMsg, wordMsg, meaningMsg);
 
-        // เชื่อมต่อลำดับเสียงให้พูดต่อกัน
-        spellMsg.onend = () => window.speechSynthesis.speak(wordMsg);
-        wordMsg.onend = () => window.speechSynthesis.speak(meaningMsg);
+            // เชื่อมต่อลำดับเสียงให้พูดต่อกัน
+            spellMsg.onend = () => window.speechSynthesis.speak(wordMsg);
+            wordMsg.onend = () => window.speechSynthesis.speak(meaningMsg);
 
-        window.speechSynthesis.speak(spellMsg);
+            window.speechSynthesis.speak(spellMsg);
+        }, 80);
     }
 
     function changeCard(dir) {
